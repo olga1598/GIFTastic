@@ -52,7 +52,7 @@ $(document).ready(function () {
         var topic = $(this).attr("data-food");
 
         // Constructing a URL to search Giphy for the chosen topic   
-        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=dc6zaTOxFJmzC&limit=10";
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=dc6zaTOxFJmzC&limit=10";
   
         // Perfoming an AJAX GET request to our queryURL
         $.ajax({
