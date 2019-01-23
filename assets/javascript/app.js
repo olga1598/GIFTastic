@@ -20,6 +20,8 @@ $(document).ready(function () {
             // Adding the buttons to HTML
             $(".topicbuttons").append(buttonTop);
         }
+        $("#images").empty();
+        
     };
 
 
@@ -43,6 +45,7 @@ $(document).ready(function () {
         topicButtons();
     });
 
+    //Adding click event listener to the buttons
     $(".buttons").on("click", function() {
 
         // In this case, the "this" keyword refers to the button that was clicked
@@ -57,9 +60,11 @@ $(document).ready(function () {
           method: "GET"
         }).then(function(response) { // After the data from the AJAX request comes back
 
+            //Storing the data from ajax request in the result variable
             var result = response.data;
             console.log("RESULT: ", result);
 
+            //Looping through each result item
             for (var i = 0; i < result.length; i++) {
 
                 //Create and store div tag
@@ -89,14 +94,15 @@ $(document).ready(function () {
                 $("#images").append(resultsDiv);
     
             } 
-            console.log(topicImage); 
         });
+        $("#images").empty();
     });
-        
-    $(".recievedImgs").on("click", function(){ 
-
+       
+    //$("#images .recievedImgs").on("click", function(){
+    //$(".recievedImgs").on("click", function(){ 
+    $("#images").on("click", ".recievedImgs", function(){ 
         // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
-        var objImg = $(this).attr("data-now");
+        var objImg = $(this).attr("data-now"); //this referes to the image that was clicked
         //Checking if the image is still and switching for animate and opposite
         if (objImg === "still") {
             $(this).attr("src", $(this).attr("data-animate"));
