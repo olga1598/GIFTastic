@@ -1,5 +1,6 @@
 #myVideo {
     position: fixed;
+    z-index: -1;
 }
 
 .navbar {
@@ -42,3 +43,4 @@ button {
     margin-top: -15px;
 
 }
+

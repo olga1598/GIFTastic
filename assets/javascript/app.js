@@ -1,6 +1,7 @@
 $(document).ready(function () {
     
     var topics = ["pasta", "burger", "cake", "ice cream", "soup", "salad"];
+    var topicImage;
     console.log(topics);
 
     function topicButtons() {
@@ -30,6 +31,12 @@ $(document).ready(function () {
         event.preventDefault();
         // Grabbing the user input text from search box
         var newTopic = $(".form-control").val();
+        for (var i = 0; i < topics.length; i++) {
+            if (newTopic == topics[i]){
+                alert("Topic " + newTopic + " already exists.");
+                return;
+            } 
+        }    
         // The new topic theme added to our array
         topics.push(newTopic);
         // Calling our topicButtons funcion to creatr new button
@@ -51,25 +58,56 @@ $(document).ready(function () {
         }).then(function(response) { // After the data from the AJAX request comes back
 
             var result = response.data;
-            console.log("RESULT: " + result);
+            console.log("RESULT: ", result);
 
             for (var i = 0; i < result.length; i++) {
-  
+
+                //Create and store div tag
+                var resultsDiv = $("<div>");
+
+                //Crerating a paragraph tag with the item's rating 
+                var rating = $("<p>").text("Rating: " + result[i].rating);
+                console.log(rating);
+
                 // Creating and storing an image tag
-                var topicImage = $("<img>");
+                topicImage = $("<img>");
+                //Creating an ID for each image
+                topicImage.attr("id", i);
+                //Creating one class for all images
+                topicImage.addClass("recievedImgs");
                 // Setting the src attribute of the image to a property pulled off the result item
-                topicImage.attr("src", result[i].images.fixed_height.url);
+                topicImage.attr("src", result[i].images.fixed_height_still.url);
+                topicImage.attr("data-still", result[i].images.fixed_height_still.url);
+                topicImage.attr("data-animate", result[i].images.fixed_height.url);
+                topicImage.attr("data-now", "still");
+
+                //Appending a paragraph and image to the resultsDiv 
+                resultsDiv.append(topicImage);
+                resultsDiv.append(rating);
+
+                // Appending the resultsDiv to the HTML page in the "#images" div
+                $("#images").append(resultsDiv);
     
-                // Prependng the  to the HTML page in the "#images" div
-                $("#images").append(topicImage);
-    
-            }  
-
-
-
-            });
-
+            } 
+            console.log(topicImage); 
+        });
     });
+        
+    $(".recievedImgs").on("click", function(){ 
+
+        // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+        var objImg = $(this).attr("data-now");
+        //Checking if the image is still and switching for animate and opposite
+        if (objImg === "still") {
+            $(this).attr("src", $(this).attr("data-animate"));
+            $(this).attr("data-now", "animate");
+        } else {
+            $(this).attr("src", $(this).attr("data-still"));
+            $(this).attr("data-now", "still");
+
+        }
+    });
+   
     
 
 
