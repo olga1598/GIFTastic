@@ -1,13 +1,70 @@
 $(document).ready(function () {
-    
+
     var topics = ["pasta", "burger", "cake", "ice cream", "soup", "salad"];
     var topicImage;
     console.log(topics);
 
+
+        //Adding click event listener to the buttons
+    var fetch = function() {
+        $(".buttons").on("click", function() {
+    
+            // In this case, the "this" keyword refers to the button that was clicked
+        var topic = $(this).attr("data-food");
+    
+        // Constructing a URL to search Giphy for the chosen topic   
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=dc6zaTOxFJmzC&limit=10";            // Perfoming an AJAX GET request to our queryURL
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).then(function(response) { // After the data from the AJAX request comes back
+    
+        //Storing the data from ajax request in the result variable
+        var result = response.data;
+        console.log("RESULT: ", result);
+    
+        //Looping through each result item
+        for (var i = 0; i < result.length; i++) {
+    
+            //Create and store div tag
+            var resultsDiv = $("<div>");
+    
+            //Crerating a paragraph tag with the item's rating 
+            var rating = $("<p>").text("Rating: " + result[i].rating);
+            console.log(rating);
+    
+            // Creating and storing an image tag
+            topicImage = $("<img>");
+            //Creating an ID for each image
+            topicImage.attr("id", i);
+            //Creating one class for all images
+            topicImage.addClass("recievedImgs");
+            // Setting the src attribute of the image to a property pulled off the result item
+            topicImage.attr("src", result[i].images.fixed_height_still.url);
+            topicImage.attr("data-still", result[i].images.fixed_height_still.url);
+            topicImage.attr("data-animate", result[i].images.fixed_height.url);
+            topicImage.attr("data-now", "still");
+    
+            //Appending a paragraph and image to the resultsDiv 
+            resultsDiv.append(topicImage);
+            resultsDiv.append(rating);
+    
+            // Appending the resultsDiv to the HTML page in the "#images" div
+            $("#images").prepend(resultsDiv);
+        
+        } 
+        });
+            $("#images").empty();
+        });
+    };
+    
+    fetch();
+    
+
     function topicButtons() {
         // Deleting the movie buttons prior to adding new movie buttons, so will not repeat
         $(".topicbuttons").empty();
-
+        $("#images").empty();
         for (var i = 0; i < topics.length; i++) {
             // Adding the empty HTML tag <button></button>
             var buttonTop = $("<button>");
@@ -20,12 +77,9 @@ $(document).ready(function () {
             // Adding the buttons to HTML
             $(".topicbuttons").append(buttonTop);
         }
-        $("#images").empty();
-        
-    };
-
-
-    topicButtons();
+       fetch(); 
+    }; 
+    topicButtons();   
 
     $("#add").on("click", function(event) {
         // event.preventDefault() prevents the form from trying to submit itself.
@@ -33,70 +87,19 @@ $(document).ready(function () {
         event.preventDefault();
         // Grabbing the user input text from search box
         var newTopic = $(".form-control").val();
+
         for (var i = 0; i < topics.length; i++) {
-            if (newTopic == topics[i]){
+            if (newTopic.toLowerCase() == topics[i].toLowerCase()){
                 alert("Topic " + newTopic + " already exists.");
                 return;
             } 
         }    
         // The new topic theme added to our array
-        topics.push(newTopic);
+        topics.push(newTopic.toLowerCase());
         // Calling our topicButtons funcion to creatr new button
         topicButtons();
     });
 
-    //Adding click event listener to the buttons
-    $(".buttons").on("click", function() {
-
-        // In this case, the "this" keyword refers to the button that was clicked
-        var topic = $(this).attr("data-food");
-
-        // Constructing a URL to search Giphy for the chosen topic   
-        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=dc6zaTOxFJmzC&limit=10";
-  
-        // Perfoming an AJAX GET request to our queryURL
-        $.ajax({
-          url: queryURL,
-          method: "GET"
-        }).then(function(response) { // After the data from the AJAX request comes back
-
-            //Storing the data from ajax request in the result variable
-            var result = response.data;
-            console.log("RESULT: ", result);
-
-            //Looping through each result item
-            for (var i = 0; i < result.length; i++) {
-
-                //Create and store div tag
-                var resultsDiv = $("<div>");
-
-                //Crerating a paragraph tag with the item's rating 
-                var rating = $("<p>").text("Rating: " + result[i].rating);
-                console.log(rating);
-
-                // Creating and storing an image tag
-                topicImage = $("<img>");
-                //Creating an ID for each image
-                topicImage.attr("id", i);
-                //Creating one class for all images
-                topicImage.addClass("recievedImgs");
-                // Setting the src attribute of the image to a property pulled off the result item
-                topicImage.attr("src", result[i].images.fixed_height_still.url);
-                topicImage.attr("data-still", result[i].images.fixed_height_still.url);
-                topicImage.attr("data-animate", result[i].images.fixed_height.url);
-                topicImage.attr("data-now", "still");
-
-                //Appending a paragraph and image to the resultsDiv 
-                resultsDiv.append(topicImage);
-                resultsDiv.append(rating);
-
-                // Appending the resultsDiv to the HTML page in the "#images" div
-                $("#images").append(resultsDiv);
-    
-            } 
-        });
-        $("#images").empty();
-    });
        
     //$("#images .recievedImgs").on("click", function(){
     //$(".recievedImgs").on("click", function(){ 
@@ -113,12 +116,4 @@ $(document).ready(function () {
 
         }
     });
-   
-    
-
-
-
-
-
-
 });
